@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中秋夜 - 专属画作</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="background-image-layer"></div>
+    
+    <audio id="bgMusic" loop autoplay>
+        <source src="./TheTruthThatYouLeave.mp3" type="audio/mp3"> 
+        您的浏览器不支援音频元素。
+    </audio>
+
+    <div class="night-sky">
+        <div class="lantern fuzi-lantern">
+            </div>
+        
+        <div id="fireworks-container"></div>
+
+        <div class="central-message">中秋节快乐宝宝！</div>
+        <div class="blessing-message">
+            宝宝~ 虽然此刻我们相隔千里，但愿这轮明月能将我的思念与爱意传递到你身边。<br>
+            中秋快乐，早日康复，期待我们下次团圆，手牵手共赏月！
+        </div>
+    </div>
+
+    <button id="playButton" onclick="playMusic()">点击开始中秋夜</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+// --- JITTER FIX: Lock the height using CSS variables ---
+function setViewportHeight() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+setViewportHeight();
+window.addEventListener('resize', setViewportHeight);
+// -------------------------------------------------------------------
+
+const bgMusic = document.getElementById('bgMusic');
+const playButton = document.getElementById('playButton');
+const backgroundLayer = document.querySelector('.background-image-layer'); // Get reference
+
+function playMusic() {
+    bgMusic.play().then(() => {
+        playButton.style.display = 'none';
+
+        // ***** THE FINAL BRUTE-FORCE LOCK *****
+        // 1. Clear transforms and transitions
+        backgroundLayer.style.transform = 'none';
+        backgroundLayer.style.transition = 'none'; 
+        
+        // 2. FORCE BROWSER REDRAW: Temporarily hide, then show the background layer.
+        // This is the last trick to stop ongoing animations.
+        backgroundLayer.style.visibility = 'hidden';
+        backgroundLayer.offsetHeight; // Triggers reflow
+        backgroundLayer.style.visibility = 'visible';
+        // **************************************
+
+        // ULTIMATE TIMING FIX: 延遲煙花啟動 500 毫秒 (半秒)
+        setTimeout(() => {
+             launchRandomFirework();
+        }, 500); 
+
+    }).catch(error => {
+        console.log("音乐播放失败，等待用户互动。", error);
+    });
+}
+
+// --- 煙花邏輯 ---
+const fireworksContainer = document.getElementById('fireworks-container');
+// 多色煙花
+const COLORS = [
+    '#FF4500',  // 橙红色
+    '#FFD700',  // 金色 (黄色)
+    '#00BFFF',  // 天蓝色
+    '#FF1493',  // 深粉红色
+    '#9370DB',  // 紫罗兰色
+    '#FFA07A',  // 浅橙色
+    '#FFFFFF'   // 白色
+];
+
+function createFirework(x, y) {
+    const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    const numParticles = Math.floor(Math.random() * 20) + 30;
+    const maxVelocity = Math.random() * 3 + 4;
+    const spreadFactor = Math.random() * 30 + 70;
+
+    for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework';
+        particle.style.backgroundColor = color;
+        
+        const size = Math.random() * 3 + 2;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+
+        const angle = Math.random() * 2 * Math.PI;
+        const velocity = Math.random() * (maxVelocity) + 1; 
+
+        const targetX = x + velocity * spreadFactor * Math.cos(angle);
+        const targetY = y + velocity * spreadFactor * Math.sin(angle);
+
+        fireworksContainer.appendChild(particle);
+
+        setTimeout(() => {
+            const duration = Math.random() * 0.5 + 1.0; 
+            particle.style.transition = `all ${duration}s ease-out`; 
+            particle.style.transform = `translate(${targetX - x}px, ${targetY - y}px)`;
+            particle.style.opacity = '0';
+            
+            setTimeout(() => {
+                particle.remove();
+            }, duration * 1000); 
+        }, 10); 
+    }
+}
+
+// 定時發射煙花，高頻率
+function launchRandomFirework() {
+    const x = Math.random() * window.innerWidth * 0.8 + window.innerWidth * 0.1;
+    const y = Math.random() * window.innerHeight * 0.6; 
+    
+    setTimeout(() => {
+        createFirework(x, y);
+    }, 500); 
+
+    const nextLaunchTime = Math.random() * 1200 + 800; 
+    setTimeout(launchRandomFirework, nextLaunchTime);
+}
