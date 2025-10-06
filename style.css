@@ -11,7 +11,7 @@ body {
     color: white; 
 
     /* --- 設置背景圖片 --- */
-    background: url('./mid-autumn.jpeg') no-repeat center center;
+    background: url('./mid-autumn.jpeg') no-repeat center center scroll;
     background-size: cover; /* 確保圖片覆蓋整個螢幕 */
 }
 
@@ -147,3 +147,4 @@ body {
     }
 
 }
+
