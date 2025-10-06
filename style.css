@@ -1,0 +1,186 @@
+/* 設定整個頁面背景 (ULTIMATE STABILITY FIX) */
+body {
+    margin: 0;
+    overflow: hidden; 
+    
+    /* ***** CRITICAL FIX: Use JS-driven stable height ***** */
+    height: calc(var(--vh, 1vh) * 100); 
+    width: 100%; 
+    
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    color: white; 
+    
+    /* Prevents any unwanted screen movement/touch action */
+    touch-action: none; 
+    
+    /* Ensure no unintended scaling on the root element */
+    transform: none; 
+    
+    /* New: Isolate body to its own rendering layer */
+    will-change: transform; 
+}
+
+/* --- 專門用於靜態背景的圖層 --- */
+.background-image-layer {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Use stable height */
+    height: calc(var(--vh, 1vh) * 100); 
+    z-index: 1; 
+    
+    background: url('./mid-autumn.jpeg') no-repeat center center;
+    background-size: cover; 
+    
+    /* FINAL FIX: Isolate background to stop fireworks interference */
+    transform: translateZ(0); /* Promotes to GPU layer */
+    will-change: transform;   /* Tells browser this layer will change */
+}
+
+/* 夜空容器 */
+.night-sky {
+    z-index: 10; 
+    width: 100%;
+    /* Use stable height */
+    height: calc(var(--vh, 1vh) * 100); 
+    position: absolute;
+    /* Isolate night sky container to a GPU layer */
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* --- 福字燈籠樣式 --- */
+.fuzi-lantern {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 70px;
+    height: 90px;
+    z-index: 15;
+    animation: swing 4s ease-in-out infinite alternate;
+}
+
+.lantern-body {
+    width: 100%;
+    height: 100%;
+    background-color: #ff4500;
+    border-radius: 50% 50% 10px 10px / 60% 60% 10px 10px;
+    box-shadow: 0 0 20px rgba(255, 69, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid gold;
+}
+
+.fuzi {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 5px #ff6347;
+}
+
+/* 燈籠底下的光暈 */
+.lantern-light {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #ffda6a;
+    box-shadow: 0 0 15px #ffda6a, 0 0 30px #ffda6a;
+}
+
+/* 燈籠擺動動畫 */
+@keyframes swing {
+    from { transform: rotate(-8deg); }
+    to { transform: rotate(8deg); }
+}
+
+/* --- 煙花樣式 (由JS動態生成) --- */
+.firework {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    pointer-events: none; 
+}
+
+/* --- 播放按鈕 (使用穩定的 margin: auto 居中) --- */
+#playButton {
+    position: fixed;
+    top: 0; 
+    bottom: 0; 
+    left: 0;
+    right: 0;
+    margin: auto; 
+    
+    width: fit-content; 
+    height: fit-content;
+
+    padding: 15px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    z-index: 1000; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.7);
+}
+
+/* --- 中間的文字 (已向下移動) --- */
+.central-message {
+    position: absolute;
+    top: 25%; /* ***** 修正: 移動到燈籠下方 ***** */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3em; 
+    font-weight: bold;
+    color: #ffd700; 
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 215, 0, 0.6);
+    z-index: 50;
+    white-space: nowrap; 
+}
+
+/* --- 下方的祝福語 --- */
+.blessing-message {
+    position: absolute;
+    bottom: 5%; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%; 
+    max-width: 600px; 
+    text-align: center;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #e0e0e0; 
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.8); 
+    z-index: 50;
+}
+
+/* 手機響應式調整 */
+@media (max-width: 600px) {
+    .fuzi-lantern {
+        width: 50px;
+        height: 70px;
+    }
+    .fuzi {
+        font-size: 2em;
+    }
+    .central-message {
+        font-size: 2em;
+        top: 25%; /* 保持與主樣式一致的向下移動 */
+    }
+    .blessing-message {
+        font-size: 0.9em;
+        bottom: 3%;
+        width: 90%;
+    }
+}
